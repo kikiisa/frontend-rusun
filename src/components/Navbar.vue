@@ -1,6 +1,14 @@
 <script>
 export default {
     name:"Navbar",
+    methods:{
+        logout()
+        {
+            console.log("logout");
+            localStorage.removeItem("token");
+            this.$router.push('/');
+        }
+    }
 }
 </script>
 <template>
@@ -8,7 +16,7 @@ export default {
         <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
             <div class="container">
                 <a class="navbar-brand" href="#">
-                    <i class="fas fa-home"></i>
+                    <i class="fas fa-hotel"></i>
                      SISTEM INFORMASI RUSUN</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -20,28 +28,23 @@ export default {
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item active navigasi">
-                            <a class="btn btn-primary" href="/dashboard"><span class="fa fa-home"></span> Beranda</a>
+                            <router-link class="btn btn-primary" to="dashboard"><span class="fa fa-gauge"></span> Beranda</router-link>
                         </li>
                         <li class="nav-item navigasi">
-                            <a class="btn btn-info" href="/new-sertifikat"><i class="fa fa-certificate"></i> Kamar Rusun</a>
+                            <router-link class="btn btn-info" to="tambah-kamar"><i class="fa fa-home"></i> Kamar Rusun</router-link>
                         </li>
                         <li class="nav-item navigasi">
-                            <a class="btn btn-dark" href="/list-sertifikat"><i class="fa fa-list"></i> Admin</a>
+                            <router-link to="/data-penduduk" class="btn btn-danger"><i class="fa fa-list"></i>  Daftar Penghuni</router-link>
                         </li>
                         <li class="nav-item navigasi">
-                            <a class="btn btn-danger"><i class="fa fa-list"></i>  Penduduk</a>
+                            <a class="btn btn-success"><i class="fa fa-th-list"></i> Daftar Keluarga</a>
                         </li>
                         <li class="nav-item navigasi">
-                            <a class="btn btn-success"><i class="fa fa-th-list"></i> Kepala Keluargara</a>
-                        </li>
-                        <li class="nav-item navigasi">
-                            <a class="btn btn-warning"><i class="fa fa-user"></i> My Profile</a>
+                            <a class="btn btn-warning"><i class="fa fa-gear"></i> Settings</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav ml-auto navigasi">
-                        <form action="/log" method="post">
-                            <button type="submit" name="logout" value="log" class="btn btn-dark"><i class="fa fa-sign-out"></i> Log-out</button>
-                        </form>
+                        <button type="button" v-on:click="logout()" class="btn btn-dark"><i class="fa fa-sign-out"></i> Log-out</button>
                     </ul>
                 </div>
             </div>

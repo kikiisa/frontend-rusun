@@ -1,21 +1,13 @@
-<template>
-  <div class="home">
-    <Navbar/>
-    <Hero/>
-  </div>
-</template>
-
 <script>
 // @ is an alias to /src
 import Navbar from '@/components/Navbar.vue'
-import Hero from '@/components/Hero.vue'
+import Formrusun from '@/components/FormRusun.vue'
 import axios from "axios";
 export default {
-  name: 'Home',
+  name: 'Kamar',
   components: {
-    Navbar,Hero
+    Navbar,Formrusun
   },
-
   methods:{
     async isAdmin()
     {
@@ -38,3 +30,15 @@ export default {
   }
 }
 </script>
+
+<template>
+    <div class="kamar">
+         <div class="home">
+            <Navbar/>
+            <Formrusun/>
+        </div>
+    </div>
+</template>
+<style scoped>
+
+</style>
