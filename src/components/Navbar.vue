@@ -34,10 +34,13 @@ export default {
                             <router-link class="btn btn-info" to="tambah-kamar"><i class="fa fa-home"></i> Kamar Rusun</router-link>
                         </li>
                         <li class="nav-item navigasi">
-                            <router-link to="/data-penduduk" class="btn btn-danger"><i class="fa fa-list"></i>  Daftar Penghuni</router-link>
+                            <router-link to="/data-penduduk" class="btn btn-danger"><i class="fa fa-list"></i> Penduduk</router-link>
                         </li>
                         <li class="nav-item navigasi">
-                            <a class="btn btn-success"><i class="fa fa-th-list"></i> Daftar Keluarga</a>
+                            <router-link to="/data-kontrak" class="btn btn-success"><i class="fa fa-th-list"></i> Kartu Keluarga</router-link>
+                        </li>
+                        <li class="nav-item navigasi">
+                            <router-link to="/kontrak" class="btn btn-info"><i class="fa fa-th-list"></i> Management Kontrak</router-link>
                         </li>
                         <li class="nav-item navigasi">
                             <a class="btn btn-warning"><i class="fa fa-gear"></i> Settings</a>

@@ -41,20 +41,7 @@
                                         <option value="3">Anak</option>
                                     </select>
                                 </div>
-                                <div class="col-md-4 mt-4">
-                                    <label for="">Nomor KK(Kartu Keluarga)</label>
-                                    <Multiselect
-                                    v-model="no_Kk"
-                                    mode="tags"
-                                    :searchable="true"
-                                    :createTag="true"
-                                    :options="[
-                                        { value: 'batman', label: 'Batman' },
-                                        { value: 'robin', label: 'Robin' },
-                                        { value: 'joker', label: 'Joker' },
-                                    ]"
-                                    />
-                                </div>   
+                                
                             </div>
                             <button type="submit" class="btn btn-danger mt-3">simpan <i class="fas fa-save"></i></button>
                         </form>
@@ -64,7 +51,7 @@
             <div class="col-md-12 mt-3">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
-                    <input type="text" v-model="keyword" @keyup.enter="searchId()" class="form-control" placeholder="Masukan Nik atau Nama Lengkap" aria-label="Username" aria-describedby="basic-addon1">
+                    <input type="text" v-model="keyword" @keyup.enter="searchId()" class="form-control" placeholder="Cari berdasarkan Nik Penduduk" aria-label="Username" aria-describedby="basic-addon1">
                 </div>
             </div>
             <div class="col-md-6" v-if="Penduduk.length != 0">
@@ -72,9 +59,9 @@
                     <div class="card-body">
                         <h3 class="card-text text-center">Profile Penduduk</h3>
                         <hr>
-                        <form class="text-start" @submit.prevent="editData()">
+                        <form class="text-start" @submit.prevent="editData(edit.nik)">
                             <div class="form-group mt-3">
-                                <label for="">Nip</label>
+                                <label for="">Nik</label>
                                 <input type="text" class="form-control W-3" v-model="edit.nik">
                             </div>
                             <div class="form-group mt-3">
@@ -105,22 +92,6 @@
                                     <option value="1">Belum menikah</option>
                                     <option value="2">Menikah</option>
                                 </select>
-                            </div>
-                            <div class="form-group mt-3">
-                                 <label for="">Nomor Kartu Keluarga</label>
-                                 <input type="text" disabled class="form-control" v-model="edit.no_kk">
-                                 <Multiselect
-                                    class="mt-2"
-                                    v-model="no_Kk"
-                                    mode="tags"
-                                    :searchable="true"
-                                    :createTag="true"
-                                    :options="[
-                                        { value: 'batman', label: 'Batman' },
-                                        { value: 'robin', label: 'Robin' },
-                                        { value: 'joker', label: 'Joker' },
-                                    ]"
-                                  />
                             </div>
                             <button class="btn btn-danger mt-3 w-100">update <i class="fas fa-save"></i></button>
                         </form>
@@ -154,11 +125,6 @@ export default {
             no_Kk: null,
             profile:null,
             edit:true,
-            options: [
-                { value: 'batman', label: 'Batman' },
-                { value: 'robin', label: 'Robin' },
-                { value: 'joker', label: 'Joker' },
-            ],
             Penduduk:[],
             edit:{
                 nik:"",
@@ -166,12 +132,31 @@ export default {
                 jkel:"",
                 stats:"",
                 stats_maried:"",
-                no_kk:null,
+                no_kk:[],
+                kk:null,
                 dataSelect:[]
             }
         }
     },
     methods:{
+        async editData(id = null)
+        {
+            const req = new FormData();
+            req.append("id",localStorage.getItem("token"));
+            req.append("nik",id)
+            req.append("nama",this.edit.nama_lengkap)
+            req.append("jkel",this.edit.jkel)
+            req.append("status",this.edit.stats)
+            req.append("status_keluarga",this.edit.stats_maried)
+            axios.post('ubah-penduduk',req).then((r)=>{
+                swal({icon:"success",title:"Pemberitahuan",text:`Data Penduduk berhasil di update`});
+                this.searchId();
+            }).catch((e)=>{
+                swal({icon:"warning",title:"Pemberitahuan",text:`${e}`});
+                this.searchId()
+                
+            })
+        },
         async deleteData(id)
         {
             const req = new FormData();
@@ -215,6 +200,7 @@ export default {
                 if(status == false)
                 {
                    swal({icon:"warning",type:"success",title:"Pemberitahuan",text:`${msg}`})
+                   this.keyword = ""
                 }else{
                     swal({icon:"success",type:"success",title:"Pemberitahuan",text:"Data Penduduk berhasil di tambahkan"})
                     this.nik = ""

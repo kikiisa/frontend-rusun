@@ -16,9 +16,19 @@ const routes = [
     component: () => import('../views/Kamar.vue')
   },
   {
+    path: '/kontrak',
+    name: 'Kontrak',
+    component: () => import('../views/Kontrak.vue')
+  },
+  {
     path: '/data-penduduk',
     name: 'Penduduk',
     component: () => import('../views/Penduduk.vue')
+  },
+  {
+    path: '/data-kontrak',
+    name: 'Kartu_keluarga',
+    component: () => import('../views/Family.vue')
   }
 ]
 const router = createRouter({

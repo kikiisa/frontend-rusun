@@ -1,11 +1,12 @@
 <script>
+// @ is an alias to /src
 import Navbar from '@/components/Navbar.vue'
-import formPenduduk from '@/components/FormPenduduk.vue'
+import FormKontrak from '@/components/FormKontrak.vue'
 import axios from "axios";
 export default {
-  name: 'Penduduk',
+  name: 'Kontrak',
   components: {
-    Navbar,formPenduduk
+    Navbar,FormKontrak
   },
   methods:{
     async isAdmin()
@@ -29,15 +30,9 @@ export default {
   }
 }
 </script>
-
 <template>
-    <div class="penduduk">
-         <div class="home">
-            <Navbar/>
-            <formPenduduk/>
-        </div>
+    <div class="kontrak">
+        <Navbar/>
+        <FormKontrak/>
     </div>
 </template>
-<style scoped>
-
-</style>
