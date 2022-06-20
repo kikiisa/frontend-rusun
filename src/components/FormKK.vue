@@ -21,7 +21,7 @@
                                         :searchable="true"
                                         :createTag="true"
                                         :options="selectPenduduk"
-                                        />
+                                    />
                                 </div>
                                 <div class="col-md-3">
                                     <label for="">Domisili</label>
@@ -50,8 +50,15 @@
             <div class="col-md-12 text-start">
                 <button @click="(this.hide == true) ? this.hide = false : this.hide = true" class="btn btn-primary mb-3">{{ (this.hide == true) ? 'Tambah data Keluarga ' : 'Sembunyikan Form ' }}<i class="fas fa-add"></i></button>
                 <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
-                    <input type="text" v-model="keyword" @keyup.enter="searchId()" class="form-control" placeholder="Cari berdasarkan No KK" aria-label="Username" aria-describedby="basic-addon1">
+                    <Multiselect
+                        placeholder="Ubah Kepala Keluarga"
+                        v-model="keyword"
+                        mode="tags"
+                        :searchable="true"
+                        :options="data_kk"
+                        @keyup.enter="searchId()"
+                    />
+                    <!--<input type="text" v-model="keyword" @keyup.enter="searchId()" class="form-control" placeholder="Cari berdasarkan No KK" aria-label="Username" aria-describedby="basic-addon1">-->
                 </div>
             </div>
             <div class="col-md-6" v-for="loop in ProfileKK" :key="loop.id">
@@ -63,13 +70,13 @@
                             <form @submit.prevent="updateKK()">
                                 <div class="form-group">
                                     <p>Nama Kepala Keluarga  : <strong>{{loop.nama_lengkap}}</strong></p>
-                                        <Multiselect
-                                        placeholder="Ubah Kepala Keluarga"
-                                        v-model="editForm.nik"
-                                        mode="tags"
-                                        :searchable="true"
-                                        :options="selectPenduduk"
-                                        :hidden="edit"
+                                    <Multiselect
+                                    placeholder="Ubah Kepala Keluarga"
+                                    v-model="editForm.nik"
+                                    mode="tags"
+                                    :searchable="true"
+                                    :options="selectPenduduk"
+                                    :hidden="edit"
                                     />
                                 </div>
                                 <div class="form-group mt-3">
@@ -163,6 +170,9 @@ export default {
             no:0,
             hide:true,
             ProfileKK:[],
+            select_kk:null,
+            data_kk:null,
+
             edit:true,
             form:{
                 id_kk:null,
@@ -173,7 +183,7 @@ export default {
             },
             selectRoom:null,
             selectPenduduk:null,
-            keyword:"",
+            keyword:null,
             anggota_kel:null,
 
             editForm:{
@@ -194,6 +204,7 @@ export default {
     created()
     {
         this.getPenduduk()
+        this.SelectKK()
     },
     methods:{
         async searchId()
@@ -211,11 +222,26 @@ export default {
                     this.editForm.no_kk = no_kk
                     this.editForm.domisili = domisili
                     this.editForm.anggota_keluarga = this.anggota_kel
+                    console.log(response)
                 }else{
+                    console.log(response)
                     swal({icon:"warning",title:"Pemberitahuan",text:`Maaf data tidak di temukan`});
                 }
             }).catch((error)=>{
                 console.log(error)
+            })
+        },
+        async SelectKK()
+        {
+            await axios.get("Api/Kontrak/index_get?select=no_kk").then((r)=>{
+                const data = []
+                const result = r.data.data;
+                result.map((response)=>{
+                    data.push(response.no_kk)
+                })
+                this.data_kk = data
+            }).catch((e)=>{
+                console.log(e)
             })
         },
         async hapusKK()
@@ -314,7 +340,6 @@ export default {
             return this.selectRoom = getData
         }
     }
-
 }
 </script>
 <style src="@vueform/multiselect/themes/default.css"></style>

@@ -37,7 +37,7 @@ export default {
                             <router-link to="/data-penduduk" class="btn btn-danger"><i class="fa fa-list"></i> Penduduk</router-link>
                         </li>
                         <li class="nav-item navigasi">
-                            <router-link to="/data-kontrak" class="btn btn-success"><i class="fa fa-th-list"></i> Kartu Keluarga</router-link>
+                            <router-link to="/data-keluarga" class="btn btn-success"><i class="fa fa-th-list"></i> Kartu Keluarga</router-link>
                         </li>
                         <li class="nav-item navigasi">
                             <router-link to="/kontrak" class="btn btn-info"><i class="fa fa-th-list"></i> Management Kontrak</router-link>

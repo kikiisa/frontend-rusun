@@ -42,24 +42,6 @@
                             </div>
                         </div>
                     </div> 
-                    <div class="col-md-4 mt-4">
-                        <div class="card bg-light bg-gradient">
-                            <div class="card-body">
-                                <i class="fa-solid fa-ban fa-3x"></i>
-                                <h5 class="mt-4">Kamar Kosong</h5>
-                                <h1>40</h1>
-                            </div>
-                        </div>
-                    </div> 
-                    <div class="col-md-4 mt-4">
-                        <div class="card bg-light bg-gradient">
-                            <div class="card-body">
-                                <i class="fa-solid fa-circle-check fa-3x"></i>
-                                <h5 class="mt-4">Kamar di Tempati</h5>
-                                <h1>40</h1>
-                            </div>
-                        </div>
-                    </div> 
                 </div>
            </div>
        </div>

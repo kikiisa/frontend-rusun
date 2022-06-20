@@ -22,12 +22,18 @@
             </div>
             <div class="col-md-8 mt-1">
                 <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
-                    <input type="text" v-model="keyword" @keyup.enter="searchId()" class="form-control" placeholder="Masukan nomor kamar dan enter" aria-label="Username" aria-describedby="basic-addon1">
+                    <Multiselect
+                        placeholder="Masukan Nomor Kamar dan Enter"
+                        v-model="keyword"
+                        mode="tags"
+                        :searchable="true"
+                        :options="data_kamar"
+                        @keyup.enter="searchId()"
+                    />
+                    <!--<input type="text" v-model="keyword" @keyup.enter="searchId()" class="form-control" placeholder="Masukan nomor kamar dan enter" aria-label="Username" aria-describedby="basic-addon1">-->
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <h1 class="text-muted text-center" v-if="keyword.length < 0">Loading ......</h1>
                         <table class="table">
                             <thead>
                                 <tr>
@@ -42,7 +48,7 @@
                                     <td>{{ x.lantai_kamar}}</td>
                                     <td>
                                         <router-link to="/" class="btn btn-warning"><i class="fas fa-edit"></i></router-link>
-                                        | <router-link to="/" class="btn btn-danger"><i class="fas fa-trash"></i></router-link>
+                                        |<router-link to="/" class="btn btn-danger"><i class="fas fa-trash"></i></router-link>
                                     </td>
                                 </tr>
                             </tbody>
@@ -54,19 +60,27 @@
     </div>
 </template>
 <script>
-import 'jquery/dist/jquery.min.js'
+import Multiselect from '@vueform/multiselect'
 import axios from "../url/base_url"
 export default {
   name: 'hero',
+    components:{
+        Multiselect
+    },
     data()
     {
         return{
             number:0,
             nomor_kamar:"",
             lantai_kamar:null,
-            keyword : "",
+            keyword :null,
+            data_kamar:null,
             dataRoom:[],
         }
+    },
+    created()
+    {
+        this.SelectNo()
     },
     methods:{
         async searchId()
@@ -74,8 +88,19 @@ export default {
             const result = await axios.get(`data-kamar?keyword=${this.keyword}`);
             this.dataRoom = result.data.data;
         },
-
-
+        async SelectNo()
+        {
+            await axios.get("Api/Kontrak/index_get?select=no_kamar").then((r)=>{
+                const data = []
+                const result = r.data.data;
+                result.map((response)=>{
+                    data.push(response.id_kamar)
+                })
+                this.data_kamar = data
+            }).catch((e)=>{
+                console.log(e)
+            })
+        },
         async storeRoom()
         {
             const token = localStorage.getItem("token");
@@ -98,6 +123,7 @@ export default {
     }
 }
 </script>
+<style src="@vueform/multiselect/themes/default.css"></style>
 <style scoped>
     .container{
         margin-top: 30px;;

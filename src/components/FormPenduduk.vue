@@ -1,6 +1,6 @@
 <template>
     <div class="container mb-4">
-        <div class="row">
+        <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card mt-1">
                     <div class="card-body text-start">
@@ -41,7 +41,6 @@
                                         <option value="3">Anak</option>
                                     </select>
                                 </div>
-                                
                             </div>
                             <button type="submit" class="btn btn-danger mt-3">simpan <i class="fas fa-save"></i></button>
                         </form>
@@ -50,8 +49,18 @@
             </div>
             <div class="col-md-12 mt-3">
                 <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>
-                    <input type="text" v-model="keyword" @keyup.enter="searchId()" class="form-control" placeholder="Cari berdasarkan Nik Penduduk" aria-label="Username" aria-describedby="basic-addon1">
+                    <!--<span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>-->
+                    <Multiselect 
+                        required
+                        placeholder="Nik Penduduk"
+                        v-model="keyword"
+                        mode="tags"
+                        :searchable="true"
+                        :createTag="true"
+                        :options="select_kk"
+                        @keyup.enter="searchId()"
+                    />
+                    <!--<input type="text" v-model="keyword" @keyup.enter="searchId()" class="form-control" placeholder="Cari berdasarkan Nik Penduduk" aria-label="Username" aria-describedby="basic-addon1">-->
                 </div>
             </div>
             <div class="col-md-6" v-if="Penduduk.length != 0">
@@ -115,7 +124,7 @@ export default {
     data()
     {
         return{
-            keyword:"",
+            keyword:null,
             number:0,
             jkel:"",
             status:"",
@@ -126,6 +135,7 @@ export default {
             profile:null,
             edit:true,
             Penduduk:[],
+            select_kk:null,
             edit:{
                 nik:"",
                 nama_lengkap:"",
@@ -138,7 +148,24 @@ export default {
             }
         }
     },
+    created(){
+        this.getPenduduk();
+        console.log(this.select_kk)
+    },
     methods:{
+        async getPenduduk()
+        {
+            await axios.get("penduduk-select").then((r)=>{
+                const data = []
+                const result = r.data.data;
+                result.map((response)=>{
+                    data.push(response.nik_penduduk)
+                })
+                this.select_kk = data
+            }).catch((e)=>{
+                console.log(e)
+            })
+        },
         async editData(id = null)
         {
             const req = new FormData();
@@ -173,8 +200,9 @@ export default {
             const { status } = result.data
             if(status == false)
             {
-                swal({icon:"warning",type:"success",title:"Pemberitahuan",text:`Nik tidak terdaftar`});
+                swal({icon:"warning",type:"warning",title:"Pemberitahuan",text:`Nik tidak terdaftar`});
             }else{
+                swal({icon:"success",type:"success",title:"Pemberitahuan",text:`NIK di Temukan`});
                 this.Penduduk = result.data.data
                 const getData = result.data.data[0];
                 this.edit.nik = getData.nik_penduduk

@@ -26,7 +26,7 @@ const routes = [
     component: () => import('../views/Penduduk.vue')
   },
   {
-    path: '/data-kontrak',
+    path: '/data-keluarga',
     name: 'Kartu_keluarga',
     component: () => import('../views/Family.vue')
   }
