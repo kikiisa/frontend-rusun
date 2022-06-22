@@ -47,8 +47,8 @@
                                     <td>{{ x.id_kamar }}</td>
                                     <td>{{ x.lantai_kamar}}</td>
                                     <td>
-                                        <router-link to="/" class="btn btn-warning"><i class="fas fa-edit"></i></router-link>
-                                        |<router-link to="/" class="btn btn-danger"><i class="fas fa-trash"></i></router-link>
+                                        <button @click="edit(x.id_kamar)" class="btn btn-warning"><i class="fas fa-edit"></i></button>
+                                        |<button @click="hapus(x.id_kamar)" class="btn btn-danger"><i class="fas fa-trash"></i></button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -81,12 +81,24 @@ export default {
     created()
     {
         this.SelectNo()
+        
     },
     methods:{
         async searchId()
         {
             const result = await axios.get(`data-kamar?keyword=${this.keyword}`);
             this.dataRoom = result.data.data;
+        },
+        async hapus(id)
+        {
+            await axios.get(`data-kamar?hapus=${id}`).then((response)=>{
+                swal({icon:"success",title:"Pemberitahuan",text:`Data Kamar di Hapus`});
+                this.searchId();
+                this.SelectNo();
+                this.keyword = null;
+            }).catch((error)=>{
+                console.log(error)
+            })
         },
         async SelectNo()
         {
@@ -113,7 +125,7 @@ export default {
                 const result = response.data;
                 this.nomor_kamar = "";
                 this.lantai_kamar = null;
-                this.getAll();
+                swal({icon:"success",title:"Pemberitahuan",text:`Berhasil Menambahkan Ruangan Kamar`});
                 console.log(result);
             }).catch((error)=>{
                 console.log(error);
