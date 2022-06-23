@@ -61,8 +61,8 @@
                 </div>
             </div>
             <div class="col-md-12 mt-3 text-start">
-                <button class="btn btn-primary">Lap : Daftar Kontrak <i class="fas fa-print"></i></button>|
-                <button class="btn btn-danger">Lap : Kontrak Tahun Ini <i class="fas fa-print"></i></button>|
+                <button @click="all()" class="btn btn-primary">Lap : Daftar Kontrak <i class="fas fa-print"></i></button>|
+                <button @click="current_year()" class="btn btn-danger">Lap : Kontrak Tahun Ini <i class="fas fa-print"></i></button>|
                 <button class="btn btn-dark">Filter <i class="fas fa-filter"></i></button>|
                 <div class="input-group mb-3 mt-3">
                     <!--<span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span>-->
@@ -128,8 +128,10 @@
     </div>
 </template>
 <script>
-import Multiselect from '@vueform/multiselect'
+import Multiselect from '@vueform/multiselect';
 import axios from '../url/base_url';
+import jspdf from 'jspdf'
+import autotable from  'jspdf-autotable'
 export default {
     name:"FormKontrak",
     components:{
@@ -161,6 +163,50 @@ export default {
         this.SelectIdKontrak()
     },
     methods:{
+        async current_year()
+        {
+            const extack = []
+            const doc = new jspdf({
+                orientation:"landscape",
+            });
+            await axios.get("laporan-all?current").then((response)=>{
+                const { data } = response.data
+                data.map((data,index)=>{
+                    const { id_kontrak,id_kk,id_kamar,mulai_kontrak,berakhir_kontrak } = data
+                    const example = [ id_kontrak,id_kk,id_kamar,mulai_kontrak,berakhir_kontrak ]
+                    extack.push(example)
+                })    
+                autotable(doc,{
+                    head: [['ID Kontrak','ID Kepala Keluarga','Nomor Kamar','Mulai Kontrak','Berakhir Kontrak']],
+                    body:extack
+                })
+                doc.save("data-tahun-ini.pdf")
+            }).catch((error)=>{
+                console.log(error)
+            });
+        },
+        async all()
+        {
+            const extack = []
+            const doc = new jspdf({
+                orientation:"landscape",
+            });
+            await axios.get("laporan-all?all").then((response)=>{
+                const { data } = response.data
+                data.map((data,index)=>{
+                    const { id_kontrak,id_kk,id_kamar,mulai_kontrak,berakhir_kontrak } = data
+                    const example = [ id_kontrak,id_kk,id_kamar,mulai_kontrak,berakhir_kontrak ]
+                    extack.push(example)
+                })    
+                autotable(doc,{
+                    head: [['ID Kontrak','ID Kepala Keluarga','Nomor Kamar','Mulai Kontrak','Berakhir Kontrak']],
+                    body:extack
+                })
+                doc.save("data.pdf")
+            }).catch((error)=>{
+                console.log(error)
+            });
+        },
         async endkontrak(id_kamar)
         {
             if(this.sisah_hari == 0)

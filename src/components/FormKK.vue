@@ -10,11 +10,12 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label for="">No Kartu Keluarga</label>
-                                    <input type="text" class="form-control" placeholder="No Kartu Keluarga" v-model="form.id_kk">
+                                    <input type="text" class="form-control" required placeholder="No Kartu Keluarga" v-model="form.id_kk">
                                 </div>
                                 <div class="col-md-3">
                                     <label for="">Kepala Keluarga</label>
                                     <Multiselect
+                                    
                                         placeholder="Nik Penduduk"
                                         v-model="form.nik"
                                         mode="tags"
@@ -25,7 +26,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <label for="">Domisili</label>
-                                    <textarea class="form-control" v-model="form.domisili" placeholder="Masukan Alamat Domisili"></textarea>
+                                    <textarea required class="form-control" v-model="form.domisili" placeholder="Masukan Alamat Domisili"></textarea>
                                 </div>
                                 <div class="col-md-3">
                                     <label for="">Anggota Keluarga</label>
@@ -39,7 +40,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <label for="">Bukti File Foto Kartu Keluarga</label>
-                                    <input type="file" id="file" class="form-control files" ref="file">
+                                    <input required type="file" id="file" class="form-control files" ref="file">
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-danger mt-3">simpan <i class="fas fa-save"></i></button>
@@ -51,7 +52,7 @@
                 <button @click="(this.hide == true) ? this.hide = false : this.hide = true" class="btn btn-primary mb-3">{{ (this.hide == true) ? 'Tambah data Keluarga ' : 'Sembunyikan Form ' }}<i class="fas fa-add"></i></button>
                 <div class="input-group mb-3">
                     <Multiselect
-                        placeholder="Ubah Kepala Keluarga"
+                        placeholder="Cari Kepala Keluarga"
                         v-model="keyword"
                         mode="tags"
                         :searchable="true"
@@ -100,6 +101,9 @@
                                         />
                                     </div>
                                 </div>
+                                <div class="form-group mt-3">
+                                    <a href="javascript:;" @click="img(loop.image)" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#image">Bukti Kartu Keluarga</a>
+                                </div>
                                 <button type="submit" class="btn btn-danger mt-3" :hidden="edit" >Edit <i class="fas fa-edit"></i></button>
                             </form>
                             <hr>
@@ -115,12 +119,27 @@
                                     <tr v-for="(item, index) in anggota_kel" :key="item">
                                         <td>{{ index+=1}}</td>
                                         <td>{{ item }}</td>
-                                        <td><a href="javascript:;" class="btn btn-primary" @click="detail(item)" data-bs-toggle="modal" data-bs-target="#exampleModal">Detail</a></td>
+                                        <td>
+                                            <a href="javascript:;" class="btn btn-primary" @click="detail(item)" data-bs-toggle="modal" data-bs-target="#exampleModal">Detail</a>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
                             <button class="btn btn-warning mt-3" @click="(this.edit == true) ? this.edit = false : this.edit = true">Update <i class="fas fa-edit"></i></button> | 
                             <button class="btn btn-danger mt-3" @click="hapusKK()">Hapus <i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="image" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Kartu Anggota Keluarga</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <img :src="bukti_image" class="img-fluid" width="500" srcset="">
                         </div>
                     </div>
                 </div>
@@ -159,6 +178,7 @@
 <script>
 import Multiselect from '@vueform/multiselect'
 import axios from '../url/base_url';
+import state from '../store/index'
 export default {
     name: 'FormKK',
     components:{
@@ -172,7 +192,8 @@ export default {
             ProfileKK:[],
             select_kk:null,
             data_kk:null,
-
+            bukti_image:null,
+            url:null,
             edit:true,
             form:{
                 id_kk:null,
@@ -205,6 +226,7 @@ export default {
     {
         this.getPenduduk()
         this.SelectKK()
+        this.url = state.state.url
     },
     methods:{
         async searchId()
@@ -244,6 +266,10 @@ export default {
                 console.log(e)
             })
         },
+        img(bukti)
+        {
+            this.bukti_image = `${this.url}assets/${bukti}`
+        },
         async hapusKK()
         {
             axios.get(`update-kk?id=${this.editForm.no_kk}`).then(()=>{
@@ -265,6 +291,7 @@ export default {
             await axios.post("update-kk",formUpdate).then((r)=>{
                 this.searchId();
                 swal({icon:"success",title:"Pemberitahuan",text:`berhasil data updated`});
+
             }).catch((e)=>{
                 this.searchId();
             })
@@ -312,7 +339,7 @@ export default {
                 {
                     swal({icon:"warning",title:"Pemberitahuan",text:`${msg}`});
                 }else{
-                    swal({icon:"success",title:"Pemberitahuan",text:`${msg}`});
+                    swal({icon:"success",title:"Pemberitahuan",text:`Data Keluarga Berhasil Di Tambahkan`});
                     this.form.id_kk = null,this.form.nik = null,this.form.anggota = null,this.form.domisili = null,this.file = null
                 }
             }).catch((e)=>{

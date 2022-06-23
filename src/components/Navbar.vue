@@ -42,9 +42,6 @@ export default {
                         <li class="nav-item navigasi">
                             <router-link to="/kontrak" class="btn btn-info"><i class="fa fa-th-list"></i> Management Kontrak</router-link>
                         </li>
-                        <li class="nav-item navigasi">
-                            <a class="btn btn-warning"><i class="fa fa-gear"></i> Settings</a>
-                        </li>
                     </ul>
                     <ul class="navbar-nav ml-auto navigasi">
                         <button type="button" v-on:click="logout()" class="btn btn-dark"><i class="fa fa-sign-out"></i> Log-out</button>

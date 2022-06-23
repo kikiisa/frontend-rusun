@@ -18,7 +18,7 @@
                                 </div>
                                 <div class="col-md-4 mt-4">
                                     <label for="">Jenis Kelamin</label>
-                                    <select v-model="jkel" class="form-control">
+                                    <select required v-model="jkel" class="form-control">
                                         <option value="">-- Pilih Jenis Kelamin --</option>
                                         <option value="1">Laki-Laki</option>
                                         <option value="2">Perempuan</option>
@@ -26,7 +26,7 @@
                                 </div>
                                 <div class="col-md-4 mt-4">
                                     <label for="">Status</label>
-                                    <select v-model="status" class="form-control" required>
+                                    <select  v-model="status" class="form-control" required>
                                         <option value="">-- Status Perkawinan --</option>
                                         <option value="1">Belum menikah</option>
                                         <option value="2">Menikah</option>
@@ -202,7 +202,6 @@ export default {
             {
                 swal({icon:"warning",type:"warning",title:"Pemberitahuan",text:`Nik tidak terdaftar`});
             }else{
-                swal({icon:"success",type:"success",title:"Pemberitahuan",text:`NIK di Temukan`});
                 this.Penduduk = result.data.data
                 const getData = result.data.data[0];
                 this.edit.nik = getData.nik_penduduk

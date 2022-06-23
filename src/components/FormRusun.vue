@@ -1,7 +1,7 @@
 <template>
     <div class="container mb-4">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-4" v-if="status_form == true">
                 <div class="card mt-1">
                     <div class="card-body text-start">
                         <h3>Tambah Kamar</h3>
@@ -17,6 +17,27 @@
                             </div>
                             <button class="btn btn-danger mt-3 w-100" type="submit"><i class="fa fa-save"></i> simpan</button>
                         </form>
+                    </div>
+                </div>
+            </div>
+             <div class="col-md-4" v-else>
+                <div class="card mt-1">
+                    <div class="card-body text-start">
+                        <h3>Edit ruang Kamar</h3>
+                        <hr>
+                        <form @submit.prevent="editRoom()" method="post">
+                            <div class="form-group">
+                                <label class="mt-2" required for="">Nomor Kamar</label>
+                                <input type="text" hidden v-model="edit.id" required class="form-control">
+                                <input type="text" v-model="edit.nomor_kamar" required class="form-control">
+                            </div>
+                            <div class="form-group mt-2">
+                                <label class="mt-2" for="">Lantai Kamar</label>
+                                <input type="number" required v-model="edit.lantai_kamar" class="form-control">
+                            </div>
+                            <button class="btn btn-danger mt-3 w-100" type="submit"><i class="fa fa-save"></i> simpan</button>
+                        </form>
+                        <button @click="(this.status_form == true) ? this.status_form = false : this.status_form = true" class="btn btn-dark mt-3 w-100"><i class="fa fa-sign-out"></i> kembali</button>
                     </div>
                 </div>
             </div>
@@ -47,7 +68,7 @@
                                     <td>{{ x.id_kamar }}</td>
                                     <td>{{ x.lantai_kamar}}</td>
                                     <td>
-                                        <button @click="edit(x.id_kamar)" class="btn btn-warning"><i class="fas fa-edit"></i></button>
+                                        <button @click="edit_data(x.id_kamar)" class="btn btn-warning"><i class="fas fa-edit"></i></button>
                                         |<button @click="hapus(x.id_kamar)" class="btn btn-danger"><i class="fas fa-trash"></i></button>
                                     </td>
                                 </tr>
@@ -74,8 +95,14 @@ export default {
             nomor_kamar:"",
             lantai_kamar:null,
             keyword :null,
+            edit:{
+                id:null,
+                nomor_kamar:"",
+                lantai_kamar:""
+            },
             data_kamar:null,
             dataRoom:[],
+            status_form:true,
         }
     },
     created()
@@ -84,10 +111,38 @@ export default {
         
     },
     methods:{
+        async editRoom()
+        {
+            const sendUpload = new FormData();
+            const { id,nomor_kamar,lantai_kamar } = this.edit
+            sendUpload.append("edit",true)
+            sendUpload.append("id",id);
+            sendUpload.append("nomor_kamar",nomor_kamar);
+            sendUpload.append("lantai_kamar",lantai_kamar);
+            await axios.post("store-kamar",sendUpload).then((r)=>{
+                swal({icon:"success",title:"Pemberitahuan",text:`Data Berhasil Di Update`});
+                this.searchId();
+                this.SelectNo();
+            }).catch((e)=>{
+                console.log(e);
+            })
+        },
         async searchId()
         {
             const result = await axios.get(`data-kamar?keyword=${this.keyword}`);
             this.dataRoom = result.data.data;
+        },
+        async edit_data(id)
+        {
+            this.status_form = false
+            await axios.get(`data-kamar?edit=${id}`).then((response)=>{
+                const { id,id_kamar,lantai_kamar } = response.data.data[0];
+                this.edit.id = id;
+                this.edit.nomor_kamar = id_kamar;
+                this.edit.lantai_kamar = lantai_kamar;
+            }).catch((error)=>{
+                console.log(error);
+            })
         },
         async hapus(id)
         {
@@ -117,6 +172,7 @@ export default {
         {
             const token = localStorage.getItem("token");
             const form = new FormData();
+            form.append("post",true);
             form.append("token",token);
             form.append("nomor",this.nomor_kamar.toUpperCase());
             form.append("lantai_kamar",this.lantai_kamar);
@@ -126,7 +182,7 @@ export default {
                 this.nomor_kamar = "";
                 this.lantai_kamar = null;
                 swal({icon:"success",title:"Pemberitahuan",text:`Berhasil Menambahkan Ruangan Kamar`});
-                console.log(result);
+                this.SelectNo();
             }).catch((error)=>{
                 console.log(error);
             })
